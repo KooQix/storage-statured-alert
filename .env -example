@@ -1,0 +1,7 @@
+# List of absolute path disks directories
+# ex: /media/user/disk1, /media/user/disk2
+# DISKS_PATHS = "/media/kooqix/M3, /media/kooqix/SSD_MyCloud"
+DISKS_PATHS = "/dev/nvme0n1p5, /dev/nvme0n1p7"
+
+# AVAILABILITY_P_THRESHOLD = 92
+AVAILABILITY_P_THRESHOLD = 70
