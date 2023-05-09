@@ -7,3 +7,6 @@ DISKS_PATHS = "/dev/nvme0n1p5, /dev/nvme0n1p7"
 AVAILABILITY_P_THRESHOLD = 70
 
 DIR_LOGS = "/logs/saturated-storage"
+
+EMAILS_DIR = "http://localhost:8000/emails"
+EMAILS_ERROR = ""

@@ -5,6 +5,8 @@ load_dotenv()
 
 from datetime import datetime
 
+import requests
+
 
 def write_log(message: str):
 	with open(os.environ.get('DIR_LOGS'), 'w') as f:
@@ -49,23 +51,22 @@ try:
 
 	# At least 1 disk has not much availability left
 	if len(list(disks_above.items())) > 0:
-		args_email = ''
+		args_email = []
 
 		items_as_list = list(disks_above.items())
 		for i in range(len(items_as_list)):
 			e = items_as_list[i]
-			args_email += f"{e[0]}:{e[1]}" 
-			if i != len(items_as_list) - 1: args_email += ','
+			args_email.append([f"{e[0]}", f"{e[1]}"])
 
-		res = subprocess.run(f"mycloud_emails 'saturated-storage' '{args_email}'", shell=True, stdin = subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
-		print(res.stderr)
-		print(res.stdout)
+
+		res = requests.post(os.environ.get("EMAILS_DIR"), json = {"args": args_email})
+		print(res.json())
 
 except Exception as e:
 	# Send error email
 	print(e)
 	write_log(f"{e.with_traceback()}")
 
-	res = subprocess.run(f"mycloud_emails 'error' [MyCloud_Saturated_Storage]_Saturated_Storage Error" , shell=True, stdin = subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
-	print(res.stderr)
-	print(res.stdout)
+	res = requests.post(os.environ.get("EMAILS_ERROR"), json = {"subject": "[Error] [MyCloud Saturated Storage] Saturated Storage Error", "error_message": f"{e.with_traceback()}"})
+
+	print(res.json())
