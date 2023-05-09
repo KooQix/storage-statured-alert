@@ -1,13 +1,18 @@
 import os
-import subprocess
+import subprocess, shlex
 from dotenv import load_dotenv
 load_dotenv()
 
+from datetime import datetime
 
+
+def write_log(message: str):
+	with open(os.environ.get('DIR_LOGS'), 'w') as f:
+		f.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}:\n")
+		f.write(message)
 
 def main():
 	disks_above = {}
-
 	disks_availabilities = []
 	for disk_name in DISKS_PATHS:
 		
@@ -44,11 +49,23 @@ try:
 
 	# At least 1 disk has not much availability left
 	if len(list(disks_above.items())) > 0:
-		print("YEEEE")
-		print(disks_above)
-		# Send emails disk above (Create template under Python/Programs/mycloud-emails/src/emails + add to available commands)
-		# 
-		# + manage send email for crontab 
+		args_email = ''
+
+		items_as_list = list(disks_above.items())
+		for i in range(len(items_as_list)):
+			e = items_as_list[i]
+			args_email += f"{e[0]}:{e[1]}" 
+			if i != len(items_as_list) - 1: args_email += ','
+
+		res = subprocess.run(f"mycloud_emails 'saturated-storage' '{args_email}'", shell=True, stdin = subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+		print(res.stderr)
+		print(res.stdout)
+
 except Exception as e:
 	# Send error email
 	print(e)
+	write_log(f"{e.with_traceback()}")
+
+	res = subprocess.run(f"mycloud_emails 'error' [MyCloud_Saturated_Storage]_Saturated_Storage Error" , shell=True, stdin = subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+	print(res.stderr)
+	print(res.stdout)
