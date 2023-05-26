@@ -10,3 +10,5 @@ DIR_LOGS = "/logs/saturated-storage"
 
 EMAILS_DIR = "http://localhost:8000/emails"
 EMAILS_ERROR = ""
+
+SSA_EMAILS_TOKEN = ""

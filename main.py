@@ -7,6 +7,11 @@ from datetime import datetime
 
 import requests
 
+headers = {
+	'Content-Type': 'application/json',
+	'Authorization': os.environ.get('SSA_EMAILS_TOKEN')
+}
+
 
 def write_log(message: str):
 	with open(os.environ.get('DIR_LOGS'), 'w') as f:
@@ -59,7 +64,7 @@ try:
 			args_email.append([f"{e[0]}", f"{e[1]}"])
 
 
-		res = requests.post(os.environ.get("EMAILS_DIR"), json = {"args": args_email})
+		res = requests.post(os.environ.get("EMAILS_DIR"), json = {"args": args_email}, headers=headers)
 		print(res.json())
 
 except Exception as e:
@@ -67,6 +72,6 @@ except Exception as e:
 	print(e)
 	write_log(f"{e.with_traceback()}")
 
-	res = requests.post(os.environ.get("EMAILS_ERROR"), json = {"subject": "[Error] [MyCloud Saturated Storage] Saturated Storage Error", "error_message": f"{e.with_traceback()}"})
+	res = requests.post(os.environ.get("EMAILS_ERROR"), json = {"subject": "[Error] [MyCloud Saturated Storage] Saturated Storage Error", "error_message": f"{e.with_traceback()}"}, headers=headers)
 
 	print(res.json())
