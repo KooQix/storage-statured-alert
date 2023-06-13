@@ -18,10 +18,10 @@ def write_log(message: str):
 		f.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}:\n")
 		f.write(message)
 
-def main():
+def main(disks_paths: list, availability_p_threshold: int):
 	disks_above = {}
 	disks_availabilities = []
-	for disk_name in DISKS_PATHS:
+	for disk_name in disks_paths:
 		
 		# Get availability of disk (column 5)
 		try:
@@ -34,12 +34,12 @@ def main():
 				)
 
 			disks_availabilities.append(availability)
-		except Exception as e:
+		except Exception:
 			raise Exception(f"Disk not found: {disk_name}")
 
-	for i in range(len(DISKS_PATHS)):
-		if disks_availabilities[i] > AVAILABILITY_P_THRESHOLD:
-			disks_above[DISKS_PATHS[i]] = disks_availabilities[i]
+	for i in range(len(disks_paths)):
+		if disks_availabilities[i] > availability_p_threshold:
+			disks_above[disks_paths[i]] = disks_availabilities[i]
 
 	return disks_above
 
@@ -52,7 +52,8 @@ try:
 	# Get all the disks to analyze, and threshold percentage [0, 100]
 	DISKS_PATHS = os.environ.get("DISKS_PATHS").replace(' ', '').split(',')
 	AVAILABILITY_P_THRESHOLD = int(os.environ.get("AVAILABILITY_P_THRESHOLD"))
-	disks_above = main()
+
+	disks_above = main(DISKS_PATHS, AVAILABILITY_P_THRESHOLD)
 
 	# At least 1 disk has not much availability left
 	if len(list(disks_above.items())) > 0:
