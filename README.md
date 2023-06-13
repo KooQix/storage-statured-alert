@@ -1,6 +1,6 @@
 # Description
 
-Given directories of disks, check the usage. If above threshold, use send-mail app to alert of the usage
+Given directories of disks, check the usage. If above threshold, send an email, using own API to alert of the low disk space.
 
 List all available disks
 
