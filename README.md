@@ -26,3 +26,8 @@ _You can either configure the email sending functionality for your needs, or if 
 # Usage
 
     python main.py
+
+_Add to crontab to periodically run the script_
+
+    # Saturated Storage alert, once a week
+    0 0 * * 0 /home/user/miniconda3/envs/venv/bin/python path/to/program/saturated-storage-alert/main.py >> /logs/saturated-storage.log
