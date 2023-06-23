@@ -70,6 +70,8 @@ try:
 		res = requests.post(os.environ.get("EMAILS_DIR"), json = {"args": args_email}, headers=headers)
 		print(res.json())
 
+	print("\nDone!")
+
 except Exception as e:
 	# Send error email
 	print(e)
