@@ -53,6 +53,8 @@ try:
 	DISKS_PATHS = os.environ.get("DISKS_PATHS").replace(' ', '').split(',')
 	AVAILABILITY_P_THRESHOLD = int(os.environ.get("AVAILABILITY_P_THRESHOLD"))
 
+	print(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n\n")
+
 	disks_above = main(DISKS_PATHS, AVAILABILITY_P_THRESHOLD)
 
 	# At least 1 disk has not much availability left
