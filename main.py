@@ -7,9 +7,23 @@ from datetime import datetime
 
 import requests
 
+EMAIL_USER = os.environ.get("EMAIL_USER")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_TOPIC = os.environ.get("EMAIL_TOPIC")
+EMAIL_URL = os.environ.get("EMAIL_URL")
+EMAIL_ERROR = os.environ.get("EMAIL_ERROR")
+
+assert EMAIL_USER is not None, "EMAIL_USER not found"
+assert EMAIL_PASSWORD is not None, "EMAIL_PASSWORD not found"
+assert EMAIL_TOPIC is not None, "EMAIL_TOPIC not found"
+assert EMAIL_URL is not None, "EMAIL_URL not found"
+assert EMAIL_ERROR is not None, "EMAIL_ERROR not found"
+
 headers = {
 	'Content-Type': 'application/json',
-	'Authorization': os.environ.get('SSA_EMAILS_TOKEN')
+	'X-USER': EMAIL_USER,
+	'X-PASS': EMAIL_PASSWORD,
+	'X-TOPIC': EMAIL_TOPIC
 }
 
 
@@ -67,7 +81,7 @@ try:
 			args_email.append([f"{e[0]}", f"{e[1]}"])
 
 
-		res = requests.post(os.environ.get("EMAILS_DIR"), json = {"args": args_email}, headers=headers)
+		res = requests.post(EMAIL_URL, json = {"args": args_email}, headers=headers)
 		print(res.json())
 
 	print("\nDone!")
@@ -77,6 +91,6 @@ except Exception as e:
 	print(e)
 	write_log(f"{e.with_traceback()}")
 
-	res = requests.post(os.environ.get("EMAILS_ERROR"), json = {"subject": "[Error] [MyCloud Saturated Storage] Saturated Storage Error", "error_message": f"{e.with_traceback()}"}, headers=headers)
+	res = requests.post(EMAIL_ERROR, json = {"subject": "[Error] [MyCloud Saturated Storage] Saturated Storage Error", "error_message": f"{e.with_traceback()}"}, headers=headers)
 
 	print(res.json())
